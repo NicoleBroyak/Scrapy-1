@@ -3,18 +3,11 @@ import scrapy
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
     start_urls = [
-        'http://quotes.toscrape.com/page/1/',
-        'http://quotes.toscrape.com/page/2/',
+        'https://books.toscrape.com/catalogue/category/books/travel_2/index.html'
     ]
 
     def parse(self, response):
-        for quote in response.css('div.quote'):
+        for quote in response.css('article.product_pod'):
             yield {
-                'text': quote.css('span.text::text').get(),
-                'author': quote.css('small.author::text').get(),
-                'tags': quote.css('div.tags a.tag::text').getall(),
+                'text': quote.css('h3').get(),
             }
-
-        next_page = response.css('li.next a::attr(href)').get()
-        if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
